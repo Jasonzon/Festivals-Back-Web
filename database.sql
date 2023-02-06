@@ -11,6 +11,7 @@ create type type_jeu as enum ('enfant','famille','ambiance','initié','expert');
 
 create table jeu(
     jeu_id serial primary key,
+    jeu_name varchar(255) not null,
     jeu_type type_jeu not null
 );
 
