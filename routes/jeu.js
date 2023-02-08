@@ -3,7 +3,7 @@ const pool = require("../db")
 
 router.get("/", async (req,res) => {
     try {
-        const allJeux = await pool.query("select * from jeu")
+        const allJeux = await pool.query("select * from jeu inner join affectation on (jeu.jeu_id = affectation.affectation_jeu) inner join zone on (zone.zone_id = affectation.affectation_zone)")
         return res.json(allJeux.rows).status(200)
     } catch (err) {
         console.error(err.message)
