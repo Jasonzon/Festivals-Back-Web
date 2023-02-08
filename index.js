@@ -17,6 +17,8 @@ app.use("/affectation", require("./routes/affectation"))
 
 app.use("/travail", require("./routes/travail"))
 
+app.use("/creneau", require("./routes/creneau"))
+
 /*
 app.get("/*", (req,res) => {
     res.sendFile(path.join(__dirname,"client/build/index.html"))

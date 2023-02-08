@@ -28,11 +28,18 @@ create table affectation(
     foreign key (affectation_zone) references zone(zone_id)
 );
 
+create table creneau(
+    creneau_id serial primary key,
+    creneau_debut timestamp not null,
+    creneau_fin timestamp not null
+);
+
 create table travail(
     travail_id serial primary key,
     travail_benevole int not null,
     foreign key (travail_benevole) references benevole(benevole_id),
     travail_zone int not null,
     foreign key (travail_zone) references zone(zone_id),
-    travail_creneau varchar(255) not null
+    travail_creneau int not null,
+    foreign key (travail_creneau) references creneau(creneau_id)
 );
