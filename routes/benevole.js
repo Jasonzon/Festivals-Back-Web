@@ -25,6 +25,26 @@ router.get("/:id", async (req,res) => {
     }
 })
 
+router.get("/creneau/:id", async (req,res) => {
+    try {
+        const {id} = req.params
+        const allBenevoles = await pool.query("select * from benevole inner join travail on (travail.travail_benevole = benevole.benevole_id) inner join creneau on (creneau.creneau_id = travail.travail_creneau) where creneau_id = $1",[id])
+        return res.json(allBenevoles.rows).status(200)
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
+router.get("/zone/:id", async (req,res) => {
+    try {
+        const {id} = req.params
+        const allBenevoles = await pool.query("select * from benevole inner join travail on (travail.travail_benevole = benevole.benevole_id) inner join zone on (zone.zone_id = travail.travail_zone) where zone_id = $1",[id])
+        return res.json(allBenevoles.rows).status(200)
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
 router.post("/", async (req,res) => {
     try {
         const {prenom,nom,mail} = req.body

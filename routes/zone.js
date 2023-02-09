@@ -25,6 +25,16 @@ router.get("/:id", async (req,res) => {
     }
 })
 
+router.get("/creneau/:id", async (req,res) => {
+    try {
+        const {id} = req.params
+        const zone = await pool.query("select distinct zone_id,zone_name from zone inner join travail on (zone.zone_id = travail.travail_zone) inner join creneau on (travail.travail_creneau = creneau.creneau_id) where creneau_id = $1",[id])
+        return res.json(zone.rows).status(200)
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
 router.post("/", async (req,res) => {
     try {
         const {name} = req.body

@@ -43,3 +43,11 @@ create table travail(
     travail_creneau int not null,
     foreign key (travail_creneau) references creneau(creneau_id)
 );
+
+create table polyuser(
+    polyuser_id serial primary key,
+    polyuser_mail varchar(255) unique not null,
+    polyuser_nom varchar(255) not null,
+    polyuser_prenom varchar(255) not null,
+    polyuser_password varchar(255) not null
+);
