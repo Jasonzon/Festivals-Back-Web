@@ -44,10 +44,13 @@ create table travail(
     foreign key (travail_creneau) references creneau(creneau_id)
 );
 
+create type user_role as enum('admin','basic');
+
 create table polyuser(
     polyuser_id serial primary key,
     polyuser_mail varchar(255) unique not null,
     polyuser_nom varchar(255) not null,
     polyuser_prenom varchar(255) not null,
-    polyuser_password varchar(255) not null
+    polyuser_password varchar(255) not null,
+    polyuser_role user_role not null
 );

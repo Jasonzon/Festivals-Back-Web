@@ -19,6 +19,8 @@ app.use("/travail", require("./routes/travail"))
 
 app.use("/creneau", require("./routes/creneau"))
 
+app.use("/polyuser", require("./routes/polyuser"))
+
 /*
 app.get("/*", (req,res) => {
     res.sendFile(path.join(__dirname,"client/build/index.html"))
