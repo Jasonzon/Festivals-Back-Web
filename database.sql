@@ -52,5 +52,5 @@ create table polyuser(
     polyuser_nom varchar(255) not null,
     polyuser_prenom varchar(255) not null,
     polyuser_password varchar(255) not null,
-    polyuser_role user_role not null
+    polyuser_role user_role default 'basic'
 );

@@ -22,7 +22,7 @@ router.get("/", auth, async (req,res) => {
 router.get("/id/:id", async (req,res) => {
     try {
         const {id} = req.params
-        const polyuser = await pool.query("SELECT polyuser_name, polyuser_role, polyuser_description, polyuser_id FROM polyuser WHERE polyuser_id = $1",[id])
+        const polyuser = await pool.query("SELECT * FROM polyuser WHERE polyuser_id = $1",[id])
         if (polyuser.rows.length === 0) {
             return res.status(403).send("Not Authorized")
         }
