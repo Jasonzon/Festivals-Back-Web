@@ -7,7 +7,7 @@ create table benevole(
     benevole_mail varchar(255) unique not null
 );
 
-create type type_jeu as enum ('enfant','famille','ambiance','initié','expert');
+create type type_jeu as enum ('enfant','famille','ambiance','initie','expert');
 
 create table jeu(
     jeu_id serial primary key,

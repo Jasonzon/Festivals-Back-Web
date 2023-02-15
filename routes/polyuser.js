@@ -7,7 +7,7 @@ const jwtGenerator = require("../utils/jwtGenerator")
 
 router.get("/", auth, async (req,res) => {
     try {
-        if (req.polyuser && req.role === "admin") {
+        if (req.role === "admin") {
             const allPolyusers = await pool.query("SELECT * FROM polyuser")
             res.json(allPolyusers.rows)
         }
@@ -98,15 +98,20 @@ router.post("/connect", async (req,res) => {
 router.put("/id/:id", auth, async (req,res) => {
     try {
         const {id} = req.params
-        const {name, description} = req.body
-        const user = req.polyuser
-        if (user && user.toString() === id.toString()) {
-            const updatePolyuser = await pool.query("UPDATE polyuser SET polyuser_name = $2, polyuser_description = $3 WHERE polyuser_id = $1 RETURNING *",[id, name, description])
-            if (updatePolyuser.rows.length === 0) {
-                return res.status(403).send("Not Authorized")
+        if (req.polyuser.toString() === id.toString()) {
+            const {name, description} = req.body
+            const user = req.polyuser
+            if (user && user.toString() === id.toString()) {
+                const updatePolyuser = await pool.query("UPDATE polyuser SET polyuser_name = $2, polyuser_description = $3 WHERE polyuser_id = $1 RETURNING *",[id, name, description])
+                if (updatePolyuser.rows.length === 0) {
+                    return res.status(403).send("Not Authorized")
+                }
+                else {
+                    res.send(updatePolyuser.rows[0])
+                }
             }
             else {
-                res.send(updatePolyuser.rows[0])
+                return res.status(403).send("Not Authorized")
             }
         }
         else {
@@ -116,7 +121,5 @@ router.put("/id/:id", auth, async (req,res) => {
         console.error(err.message)
     }
 })
-
-//delete not possible
 
 module.exports = router
