@@ -23,9 +23,9 @@ create table zone(
 create table affectation(
     affectation_id serial primary key,
     affectation_jeu int not null,
-    foreign key (affectation_jeu) references jeu(jeu_id),
+    foreign key (affectation_jeu) references jeu(jeu_id) on delete cascade,
     affectation_zone int not null,
-    foreign key (affectation_zone) references zone(zone_id)
+    foreign key (affectation_zone) references zone(zone_id) on delete cascade
 );
 
 create table creneau(
@@ -37,11 +37,11 @@ create table creneau(
 create table travail(
     travail_id serial primary key,
     travail_benevole int not null,
-    foreign key (travail_benevole) references benevole(benevole_id),
+    foreign key (travail_benevole) references benevole(benevole_id) on delete cascade,
     travail_zone int not null,
-    foreign key (travail_zone) references zone(zone_id),
+    foreign key (travail_zone) references zone(zone_id) on delete cascade,
     travail_creneau int not null,
-    foreign key (travail_creneau) references creneau(creneau_id)
+    foreign key (travail_creneau) references creneau(creneau_id) on delete cascade
 );
 
 create type user_role as enum('admin','basic');
