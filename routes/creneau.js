@@ -40,7 +40,7 @@ router.post("/", auth, async (req,res) => {
     try {
         if (req.role === "admin") {
             const {debut,fin} = req.body
-            const creneau = await pool.query("insert into creneau (creneau_debut,creneau_fin) values ($1,$2) returning *",[debut,fin])
+            const creneau = await pool.query("insert into creneau (creneau_debut,creneau_fin) values ($1::timestamp,$2::timestamp) returning *",[debut,fin])
             if (creneau.rows.length === 0) {
                 return res.status(500)
             }
