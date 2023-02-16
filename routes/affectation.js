@@ -26,6 +26,16 @@ router.get("/:id", async (req,res) => {
     }
 })
 
+router.get("/jeu/:id", async (req,res) => {
+    try {
+        const {id} = req.params
+        const affectation = await pool.query("select zone_id from affectation inner join zone on (affectation.affectation_zone = zone.zone_id) where affectation_jeu = $1",[id])
+        return res.json(affectation.rows).status(200)
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
 router.post("/", auth, async (req,res) => {
     try {
         if (req.role === "admin") {
