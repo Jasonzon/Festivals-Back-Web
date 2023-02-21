@@ -4,7 +4,7 @@ const auth = require("../utils/auth")
 
 router.get("/", async (req,res) => {
     try {
-        const allJeux = await pool.query("SELECT jeu.jeu_id, jeu.jeu_name, jeu.jeu_type, array_agg(zone.zone_name) AS zones_affectees FROM jeu JOIN affectation ON jeu.jeu_id = affectation.affectation_jeu JOIN zone ON affectation.affectation_zone = zone.zone_id GROUP BY jeu.jeu_id")
+        const allJeux = await pool.query("SELECT jeu.jeu_id, jeu.jeu_name, jeu.jeu_type, array_remove(array_agg(zone.zone_name), NULL) AS zones_affectees FROM jeu LEFT JOIN affectation ON jeu.jeu_id = affectation.affectation_jeu LEFT JOIN zone ON affectation.affectation_zone = zone.zone_id GROUP BY jeu.jeu_id;")
         return res.json(allJeux.rows).status(200)
     } catch (err) {
         console.error(err.message)
