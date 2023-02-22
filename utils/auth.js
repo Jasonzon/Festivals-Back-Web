@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
         }
         const payload = jwt.verify(jwtToken, process.env.jwtSecret)
         if (!payload) {
-            return res.status(403).send("Not Authorized")
+            return res.status(401).send("Not Authorized")
         }
         req.polyuser = payload.polyuser
         req.role = payload.role

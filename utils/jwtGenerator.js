@@ -8,7 +8,7 @@ function jwtGenerator(polyuser_id,polyuser_role,polyuser_mail) {
         mail:polyuser_mail
     }
 
-    return jwt.sign(payload, process.env.jwtSecret, {expiresIn: "1hr"})
+    return jwt.sign(payload, process.env.jwtSecret, {expiresIn: "24hr"})
 }
 
 module.exports = jwtGenerator

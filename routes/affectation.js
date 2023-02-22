@@ -4,7 +4,7 @@ const auth = require("../utils/auth")
 
 router.get("/", async (req,res) => {
     try {
-        const allAffectations = await pool.query("select * from affectation")
+        const allAffectations = await pool.query("select * from affectation inner join jeu on (jeu.jeu_id = affectation.affectation_jeu) inner join zone on (zone.zone_id = affectation.affectation_zone)")
         return res.json(allAffectations.rows).status(200)
     } catch (err) {
         console.error(err.message)

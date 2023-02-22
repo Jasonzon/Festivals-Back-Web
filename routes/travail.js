@@ -26,6 +26,16 @@ router.get("/:id", async (req,res) => {
     }
 })
 
+router.get("/benevole/:id", async (req,res) => {
+    try {
+        const {id} = req.params
+        const allTravaux = await pool.query("select * from travail inner join zone on (zone.zone_id = travail.travail_zone) inner join creneau on (creneau.creneau_id = travail.travail_creneau) where travail_benevole = $1",[id])
+        return res.json(allTravaux.rows).status(200)
+    } catch (err) {
+        console.error(err.message)
+    }
+})
+
 router.post("/", auth, async (req,res) => {
     try {
         if (req.role === "admin") {
@@ -71,13 +81,8 @@ router.delete("/:id", auth, async (req,res) => {
     try {
         if (req.role === "admin") {
             const {id} = req.params
-            const travail = await pool.query("delete from travail where travail_id = $1 returning *",[id])
-            if (travail.rows.length === 0) {
-                return res.status(500)
-            }
-            else {
-                return res.status(200)
-            }
+            const travail = await pool.query("delete from travail where travail_id = $1",[id])
+            return res.status(500).send("Deleted")
         }
         else {
             return res.status(403).send("Not Authorized")
