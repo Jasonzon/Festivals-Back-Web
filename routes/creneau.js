@@ -4,8 +4,19 @@ const auth = require("../utils/auth")
 
 router.get("/", async (req,res) => {
     try {
-        const allCreneaux = await pool.query("select * from creneau")
-        return res.json(allCreneaux.rows).status(200)
+        const creneaux = await pool.query("select * from creneau")
+        const creneauxModifies = creneaux.rows.map((creneau) => {
+            const debutModifie = new Date(creneau.creneau_debut)
+            debutModifie.setHours(debutModifie.getHours() + 1)
+            const finModifie = new Date(creneau.creneau_fin)
+            finModifie.setHours(finModifie.getHours() + 1)
+            return {
+                creneau_id: creneau.creneau_id,
+                creneau_debut: debutModifie.toISOString(),
+                creneau_fin: finModifie.toISOString()
+            }
+        })
+        return res.json(creneauxModifies).status(200)
     } catch (err) {
         console.error(err.message)
     }
@@ -19,7 +30,16 @@ router.get("/:id", async (req,res) => {
             return res.status(404)
         }
         else {
-            return res.json(creneau.rows[0]).status(200)
+            const creneauDebut = new Date(creneau.rows[0].creneau_debut)
+            creneauDebut.setHours(creneauDebut.getHours() + 1)
+            const creneauFin = new Date(creneau.rows[0].creneau_fin)
+            creneauFin.setHours(creneauFin.getHours() + 1)
+            const creneauModifie = {
+                creneau_id: creneau.rows[0].creneau_id,
+                creneau_debut: creneauDebut.toISOString(),
+                creneau_fin: creneauFin.toISOString()
+            }
+            return res.json(creneauModifie).status(200)
         }
     } catch (err) {
         console.error(err.message)
