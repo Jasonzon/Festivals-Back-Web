@@ -16,9 +16,10 @@ router.get("/", async (req,res) => {
                 creneau_fin: finModifie.toISOString()
             }
         })
-        return res.json(creneauxModifies).status(200)
+        return res.status(200).json(creneauxModifies)
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
@@ -27,7 +28,7 @@ router.get("/:id", async (req,res) => {
         const {id} = req.params
         const creneau = await pool.query("select * from creneau where creneau_id = $1",[id])
         if (creneau.rows.length === 0) {
-            return res.status(404)
+            return res.status(404).send("Not found")
         }
         else {
             const creneauDebut = new Date(creneau.rows[0].creneau_debut)
@@ -39,10 +40,11 @@ router.get("/:id", async (req,res) => {
                 creneau_debut: creneauDebut.toISOString(),
                 creneau_fin: creneauFin.toISOString()
             }
-            return res.json(creneauModifie).status(200)
+            return res.status(200).json(creneauModifie)
         }
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
@@ -50,9 +52,10 @@ router.get("/zone/:id", async (req,res) => {
     try {
         const {id} = req.params
         const creneau = await pool.query("select distinct creneau_id,creneau_debut,creneau_fin  from creneau inner join travail on (creneau.creneau_id = travail.travail_creneau) inner join zone on (travail.travail_zone = zone.zone_id) where zone_id = $1",[id])
-        return res.json(creneau.rows).status(200)
+        return res.status(200).json(creneau.rows)
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
@@ -61,18 +64,14 @@ router.post("/", auth, async (req,res) => {
         if (req.role === "admin") {
             const {debut,fin} = req.body
             const creneau = await pool.query("insert into creneau (creneau_debut,creneau_fin) values ($1::timestamp,$2::timestamp) returning *",[debut,fin])
-            if (creneau.rows.length === 0) {
-                return res.status(500)
-            }
-            else {
-                return res.json(creneau.rows[0]).status(200)
-            }
+            return res.status(200).json(creneau.rows[0])
         }
         else {
             return res.status(403).send("Not Authorized")
         }
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
@@ -82,18 +81,14 @@ router.put("/:id", auth, async (req,res) => {
             const {id} = req.params
             const {debut,fin} = req.body
             const creneau = await pool.query("update creneau set creneau_debut = $2, creneau_fin = $3 where creneau_id = $1 returning *",[id,debut,fin])
-            if (creneau.rows.length === 0) {
-                return res.status(500)
-            }
-            else {
-                return res.json(creneau.rows[0]).status(200)
-            }
+            return res.status(200).json(creneau.rows[0])
         }
         else {
             return res.status(403).send("Not Authorized")
         }
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
@@ -102,18 +97,14 @@ router.delete("/:id", auth, async (req,res) => {
         if (req.role === "admin") {
             const {id} = req.params
             const creneau = await pool.query("delete from creneau where creneau_id = $1 returning *",[id])
-            if (creneau.rows.length === 0) {
-                return res.status(500)
-            }
-            else {
-                return res.status(200)
-            }
+            return res.status(200).send("Deletion succeeded")
         }
         else {
             return res.status(403).send("Not Authorized")
         }
     } catch (err) {
         console.error(err.message)
+        res.status(500).send("Server error")
     }
 })
 
