@@ -72,7 +72,7 @@ router.post("/", auth, async (req,res) => {
     try {
         if (req.role === "admin") {
             const {debut,fin} = req.body
-            if (!debut || !fin || typeof debut !== "string" || typeof fin !== "string") {
+            if (!debut || !fin || typeof debut !== "string" || typeof fin !== "string" || debut >= fin) {
                 return res.status(400).send("Wrong body")
             }
             const creneau = await pool.query("insert into creneau (creneau_debut,creneau_fin) values ($1::timestamp,$2::timestamp) returning *",[debut,fin])
@@ -90,7 +90,7 @@ router.put("/:id", auth, async (req,res) => {
         if (req.role === "admin") {
             const {id} = req.params
             const {debut,fin} = req.body
-            if (!debut || !fin || typeof debut !== "string" || typeof fin !== "string") {
+            if (!debut || !fin || typeof debut !== "string" || typeof fin !== "string" || debut >= fin) {
                 return res.status(400).send("Wrong body")
             }
             const creneau = await pool.query("update creneau set creneau_debut = $2, creneau_fin = $3 where creneau_id = $1 returning *",[id,debut,fin])

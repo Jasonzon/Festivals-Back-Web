@@ -21,7 +21,7 @@ router.get("/", auth, async (req,res) => {
 router.get("/id/:id", auth, async (req,res) => {
     try {
         const {id} = req.params
-        if (req.polyuser === id) {
+        if (req.polyuser.toString() === id.toString()) {
             const polyuser = await pool.query("SELECT * FROM polyuser WHERE polyuser_id = $1",[id])
             if (polyuser.rows.length === 0) {
                 return res.status(404).send("Not found")
@@ -68,6 +68,10 @@ router.post("/", async (req,res) => {
         const {nom, prenom, mail, password} = req.body
         if (!nom || !prenom || !mail || !password || typeof nom !== "string" || typeof prenom !== "string" || typeof mail !== "string" || typeof password !== "string" || nom.length === 0 || prenom.length === 0 || mail.length === 0 || password.length === 0 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
             return res.status(400).send("Wrong body")
+        }
+        const check = await pool.query("select * from polyuser where benevole_mail = $1",[mail])
+        if (check.rows.length !== 0) {
+            return res.status(409).send("Already exists")
         }
         const saltRound = 10
         const salt = await bcrypt.genSalt(saltRound)
